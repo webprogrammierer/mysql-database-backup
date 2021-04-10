@@ -19,6 +19,7 @@ class DBDump {
   private $dest_fname;
   private $dump_file;
   private $mycnf_file = "/home/.my.cnf";
+  private $show_exec_output = false;  
   
   
   /**
@@ -48,6 +49,14 @@ class DBDump {
   
   
   /**
+   * Show mysqldump & exec command output, result or errors
+   */
+  public function showMysqldumpExecCommandOutput($show_exec_output) {
+    $this->show_exec_output = $show_exec_output;
+  }
+  
+  
+  /**
    * doBackup()
    * Do the Backup of the database and dump it to the specified file
    */
@@ -73,11 +82,11 @@ class DBDump {
     $return_var = NULL;
     $output = NULL;
     exec($sh_cmd, $output, $return_var);  // do a mysqldump with exec command
-    //$this->show_exec_output($return_var, $output);
+    $this->show_exec_output($return_var, $output);
 
     if ($return_var == 0) { // mysqldump call was free of errors
       exec("(gzip  $this->dump_file) 2>&1", $output, $return_var);  // zip the dump with gzip 
-      //$this->show_exec_output($return_var, $output);
+      $this->show_exec_output($return_var, $output);
       if ($return_var == 0) {
         echo "\n<br>Backup File '$this->dump_file.gz' successfully created!";
       } else {
@@ -95,9 +104,11 @@ class DBDump {
   }
 
   private function show_exec_output($return_var, $output) {
-    echo "\n\n<p>output = ".$output;
-    echo "\n<pre>"; print_r($output); echo "\n</pre>";
-    echo "\n\n<p>return_var = ".$return_var;
+    if ($this->show_exec_output) {    
+      echo "\n\n<p>output = " . ( !is_array($output) ? $output : '');
+      echo "\n<pre>"; print_r($output); echo "\n</pre>";
+      echo "\n\n<p>return_var = ".$return_var;
+    }      
   }
 
   
@@ -124,9 +135,11 @@ class DBDump {
       $return_var = NULL;
       $output = NULL;
       exec($sh_cmd, $output, $return_var);  // do a mysqldump with exec command
+      $this->show_exec_output($return_var, $output);      
 
       if ($return_var == 0) { 
         exec("(gzip  $monthly_fname) 2>&1", $output, $return_var);  // zip the dump with gzip 
+        $this->show_exec_output($return_var, $output);
         if ($return_var == 0) {
           echo "\n<br>Monthly Backup File '$monthly_fname.gz' successfully created!";
         } else {
