@@ -167,7 +167,7 @@ class DBDump {
       preg_match("/-f(\d+)-/", $oldfn, $tmp_arr);
       $oldfnumber = intval($tmp_arr[1]);
       if ($oldfnumber % 2 == 0) {  // only even files, if older than 4 days
-        $oldfile_day = substr($oldfn, 0, 10);
+        $oldfile_day = substr($oldfn, 0, 10);   // YYYY-mm-dd (10)
         if (($oldfile_day < $today_minus4) && file_exists($oldfn)) {
           unlink("$this->dest_path/$oldfn");
           echo "\n<br>Delete $oldfn";
@@ -193,7 +193,7 @@ class DBDump {
       preg_match("/-f(\d+)-/", $oldfn, $tmp_arr);
       $oldfnumber = intval($tmp_arr[1]);
       if (($oldfnumber+1) % 4 == 0) {  // only every second odd file
-        $oldfile_day = substr($oldfn, 0, 10);
+        $oldfile_day = substr($oldfn, 0, 10);   // YYYY-mm-dd (10)
         if (($oldfile_day < $today_minus7) && file_exists($oldfn)) {
           unlink("$this->dest_path/$oldfn");
           echo "\n<br>Delete $oldfn";
@@ -215,7 +215,7 @@ class DBDump {
     
     $del_cnt = 0;
     foreach($existing_oldfiles_arr AS $oldfn) {
-      $oldfile_day_only = substr($oldfn, 8, 10);
+      $oldfile_day_only = substr($oldfn, 8, 2);  // dd (2)
       if ($oldfile_day_only % 2 == 0) {
         unlink("$this->dest_path/$oldfn");
         echo "\n<br>Delete $oldfn";
