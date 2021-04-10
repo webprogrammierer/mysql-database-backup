@@ -122,9 +122,16 @@ class DBDump {
     
     echo "\n\n<p>Create monthly Backup, if it still not exists ...";
     
-    $monthly_fname = $this->getMonthlyFileName($this->dbname);
+    $backup_month = date("m");
+    if ($backup_month == "01") {
+      $backup_month = "12";
+    } else {
+      $backup_month = sprintf("%02d", ($backup_month-1) );
+    }
+    // 2021-03-01-month02-wa6281_db6.sql.gz
+    $monthly_fname = date("Y-m-d")."-month".$backup_month."-".$this->dbname.".sql";    
     
-    $search_fname = date("Y")."*-month".date("m", strtotime("-1 months"))."-".$this->dbname.".sql.gz";
+    $search_fname = date("Y")."*-month".$backup_month."-".$this->dbname.".sql.gz";
     chdir($this->dest_path);
     $existing_files_arr = glob($search_fname);
     
@@ -327,17 +334,6 @@ class DBDump {
   }
   
   
-  /**
-   * getMonthlyFileName()
-   */
-  private function getMonthlyFileName($dbname) {
-    // 2021-03-01-month02-wa6281_db6.sql.gz
-    $date = date("Y-m-d");    
-    $backup_month = date("m", strtotime("-1 months"));
-    
-    $dest = $date."-month".$backup_month."-".$dbname.".sql";    
-    return($dest);
-  }
   
 }  
 
