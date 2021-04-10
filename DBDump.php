@@ -66,11 +66,11 @@ class DBDump {
     
     // mysqldump command 
 
-    //$sh_cmd = "mysqldump --defaults-file=/home/.my.cnf  wa6281_db6|gzip > $dump_file";
+    //$sh_cmd = "mysqldump --defaults-file=$this->mycnf_file  wa6281_db6|gzip > $dump_file";
 
     // do not zip immediately with pipe |gzip, otherwise the return value ($return_var) is always 0, since it comes from gzip
     // therefore only zip afterwards
-    //$sh_cmd = "mysqldump --defaults-file=/home/.my.cnf  wa6281_db6  > $dump_file";  
+    //$sh_cmd = "mysqldump --defaults-file=$this->mycnf_file  wa6281_db6  > $dump_file";  
 
     // Use this solution to output error messages
     // https://serverfault.com/questions/757462/mysqldump-using-php-exec-not-dumping-file-but-no-error
@@ -129,7 +129,7 @@ class DBDump {
     $existing_files_arr = glob($search_fname);
     
     if (count($existing_files_arr) == 0) {  // the monthly backup does not exist, we create it now
-      $sh_cmd = "(mysqldump --defaults-file=/home/.my.cnf  $this->dbname  > $monthly_fname) 2>&1";
+      $sh_cmd = "(mysqldump --defaults-file=$this->mycnf_file  $this->dbname  > $monthly_fname) 2>&1";
       
       echo "\n<br>Dumping Database to '$monthly_fname'";
       $return_var = NULL;
